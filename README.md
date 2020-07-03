@@ -16,6 +16,23 @@ When first building a Rails application, it is possible to flag that the
 application should be API-only. In this lesson, we will take a look at what this
 means and how it provides us with some useful automatic configurations.
 
+
+
+def index
+  dogs = Dog.all
+  render json: dogs, except: [:created_at, :updated_at]
+end
+
+def show
+  sighting = Sighting.find_by(id: params[:id])
+  if sighting
+    render json: sighting.to_json(:include => {
+    :bird => {:only => [:name, :species]},
+    :location => {:only => [:longitude, :latitude]}
+    }, :except => [:updated_at])
+  end
+
+end
 ## Using the `--api` Flag
 
 To create an API-only Rails build from scratch, include the `--api` after the
